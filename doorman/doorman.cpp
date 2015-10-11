@@ -1,6 +1,6 @@
 #include <wiringPi.h>
 
-#include "Doorman.h"
+#include "doorman.h"
 #include "config.h"
 
 void doorman::setup() {
