@@ -87,7 +87,7 @@ int do_write(char *channel_str, char *sound_str) {
   static int sound_map[] = {0b11110111,0b11111011,0b11111101};
   int sound_bit = sound_map[sound];
 
-  for(int i = 0; i < 80; i++){
+  for(int i = 0; i < 10; i++){
     for(int j = 3; j >= 0; j--){
        doorman::write(1);
        delayMicroseconds(delay);
