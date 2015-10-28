@@ -82,10 +82,19 @@ int do_write(char *channel_str, char *sound_str) {
   int channel = atoi(channel_str);
   int sound = atoi(sound_str);
   static int channel_map[] = {0b1111,0b0011,0b1011,0b0000,0b1000,0b0100,0b1100,0b0101,0b1101,0b0001,0b1001,0b0010,0b1010,0b0110,0b1110,0b0111};
+  if(channel > channel_map.size() || channel < 1){
+    cerr << "Channel not existing" << newline
+    return 1
+  }
   int channel_bit = channel_map[channel - 1];
 
   static int sound_map[] = {0b11110111,0b11111011,0b11111101};
-  int sound_bit = sound_map[sound];
+  if(sound > sound_map.size() || channel < 1){
+    cerr << "Channel not existing" << newline
+    return 1
+  }
+  int sound_bit = sound_map[sound - 1];
+
 
   for(int i = 0; i < 10; i++){
     for(int j = 3; j >= 0; j--){
