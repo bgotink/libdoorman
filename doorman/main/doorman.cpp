@@ -139,6 +139,6 @@ int main(int argc, char ** argv) {
   } else if (command_write == argv[1] && argc == 4) {
     return do_write(argv[2], argv[3]);
   } else {
-    fprintf(stderr, "Invalid mode \"%s\", valid modes are \"read\", \"read-human\" and \"write <channel> <sound>\"\n", argv[1]);
+    fprintf(stderr, "Invalid mode \"%s\", valid modes are \"read\", \"read-human\" and \"write <channel> <sound>\"\n\nChannel can range from 1 to %d\nSound can range from 1 to %d\n", argv[1], channel_map.size(), sound_map.size());
   }
 }
