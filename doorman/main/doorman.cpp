@@ -13,6 +13,8 @@ using namespace std;
 string command_read("read");
 string command_readHuman("read-human");
 string command_write("write");
+static int channel_map[] = {0b1111,0b0011,0b1011,0b0000,0b1000,0b0100,0b1100,0b0101,0b1101,0b0001,0b1001,0b0010,0b1010,0b0110,0b1110,0b0111};
+static int sound_map[] = {0b11110111,0b11111011,0b11111101};
 
 #define COUNT 500000
 
@@ -81,17 +83,15 @@ int do_write(char *channel_str, char *sound_str) {
   static int delay = 200;
   int channel = atoi(channel_str);
   int sound = atoi(sound_str);
-  static int channel_map[] = {0b1111,0b0011,0b1011,0b0000,0b1000,0b0100,0b1100,0b0101,0b1101,0b0001,0b1001,0b0010,0b1010,0b0110,0b1110,0b0111};
   if(channel > sizeof(channel_map) || channel < 1){
-    cerr << "Channel not existing" << newline
-    return 1
+    cerr << "Channel not existing" << newline;
+    return 1;
   }
   int channel_bit = channel_map[channel - 1];
 
-  static int sound_map[] = {0b11110111,0b11111011,0b11111101};
   if(sound > sizeof(sound_map) || channel < 1){
-    cerr << "Channel not existing" << newline
-    return 1
+    cerr << "Channel not existing" << newline;
+    return 1;
   }
   int sound_bit = sound_map[sound - 1];
 
