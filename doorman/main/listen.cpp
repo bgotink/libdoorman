@@ -87,12 +87,14 @@ void parse(void) {
 
       while (count-- > 0) {
         if (parser.consume(current->value)) {
+          std::cout << current->value;
           if (parser.is_ready()) {
-            std::cout << parser.bits[0] << parser.bits[1] << parser.bits[2] << parser.bits[2] <<
+            std::cout << '\n' << parser.bits[0] << parser.bits[1] << parser.bits[2] << parser.bits[2] <<
                 parser.bits[4] << parser.bits[5] << parser.bits[6] << parser.bits[7] << parser.bits[8] << parser.bits[9] << parser.bits[10] << parser.bits[11] << std::endl;
             parser.reset();
           }
         } else {
+          std::cout << '\n';
           parser.reset();
         }
       }
