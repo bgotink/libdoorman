@@ -7,7 +7,7 @@
 #include "../parser.hpp"
 
 #define PIN_READ 27
-#define PARSER_WAIT 200
+#define PARSER_WAIT 20
 
 #define ONE_BIT_LENGTH 200
 #define MIN_SIGNAL_LENGTH (ONE_BIT_LENGTH / 2)
