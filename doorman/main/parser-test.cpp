@@ -5,6 +5,12 @@ using std::cin;
 using std::cout;
 using std::endl;
 
+#define print_parser \
+  for (int __i = 0; __i < parser.length; __i++) {\
+    cout << parser.bits[__i];\
+  }\
+  cout << endl;
+
 int main(int argc, char ** argv) {
   doorman::init();
   doorman::parser_t parser;
@@ -18,9 +24,10 @@ int main(int argc, char ** argv) {
       cout << "Expected bit " << bit << endl;
       if (parser.is_ready()) {
         cout << "Parser ready!" << endl;
-        cout << parser.bits[0] << parser.bits[1] << parser.bits[2] << parser.bits[2] <<
-            parser.bits[4] << parser.bits[5] << parser.bits[6] << parser.bits[7] << parser.bits[8] << parser.bits[9] << parser.bits[10] << parser.bits[11] << endl;
+        print_parser
         parser.reset();
+      } else {
+        print_parser
       }
     } else {
       cout << "Unexpected bit " << bit << endl;
