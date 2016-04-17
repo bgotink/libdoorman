@@ -43,7 +43,7 @@ void handleInterrupt(void) {
     interrupt = new Interrupt();
   }
 
-  interrupt->value = (unsigned int) ::digitalRead(PIN_READ);
+  interrupt->value = (unsigned int) (1 - ::digitalRead(PIN_READ));
   interrupt->timestamp = std::chrono::high_resolution_clock::now();
 
   if (!interrupts.push(interrupt)) {
