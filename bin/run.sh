@@ -10,10 +10,10 @@ if [ ! -x bin/listen ]; then
 fi
 
 NODE=nodejs
-if which -s node >/dev/null 2>&1; then
+if which node >/dev/null 2>&1; then
   NODE=node
 fi
 
-cd js; npm install; cd -
+#cd js; npm install; cd -
 
 sudo bin/listen | $NODE js/handle
