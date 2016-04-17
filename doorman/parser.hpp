@@ -3,21 +3,23 @@
 
 namespace doorman
 {
-  struct state;
+  void init();
 
-  class parser {
-    state *state;
+  struct state_t;
+
+  class parser_t {
+    state_t *state;
 
   public:
     unsigned int bits[12];
     unsigned int length;
 
-    parser();
+    parser_t();
 
     void reset();
     bool consume(unsigned int);
     inline bool is_ready() const {
-      return this->length === 12;
+      return this->length == 12;
     }
   };
 }

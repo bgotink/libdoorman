@@ -5,7 +5,7 @@ LIB_CXXSRC = $(wildcard doorman/*.cpp)
 INCLUDE=-Idoorman
 LIBS=-lwiringPi
 
-CXXFLAGS=$(INCLUDE)
+CXXFLAGS=$(INCLUDE) -std=c++11
 CCFLAGS=$(CXXFLAGS)
 
 LIB_OBJS = $(addprefix build/, $(subst /,_,$(LIB_CXXSRC:.cpp=.o)))

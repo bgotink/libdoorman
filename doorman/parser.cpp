@@ -2,22 +2,22 @@
 
 namespace doorman {
 
-typedef bool (parser_state_fn *)(unsigned int, parser &);
+typedef bool (* parser_state_fn)(unsigned int, parser_t &);
 
-struct state {
+struct state_t {
   parser_state_fn fn;
-  state *next;
+  state_t *next;
 };
 
-static bool state_fn_one(unsigned int bit, parser &parser) {
+static bool state_fn_one(unsigned int bit, parser_t &parser) {
   return bit == 1;
 }
 
-static bool state_fn_zero(unsigned int bit, parser &parser) {
+static bool state_fn_zero(unsigned int bit, parser_t &parser) {
   return bit == 0;
 }
 
-static bool state_fn_bit(unsigned int bit, parser &parser) {
+static bool state_fn_bit(unsigned int bit, parser_t &parser) {
   if (parser.length < 12) {
     parser.bits[parser.length] = bit;
     parser.length++;
@@ -28,34 +28,35 @@ static bool state_fn_bit(unsigned int bit, parser &parser) {
   return false;
 }
 
-static bool state_fn_invalid(unsigned int bit, parser &parser) {
+static bool state_fn_invalid(unsigned int bit, parser_t &parser) {
   return false;
 }
 
-static state one, zero, bit;
+static state_t one, zero, bit;
+static state_t invalid;
 
-one.fn = &state_fn_one;
-one.next = &zero;
+void init() {
+  one.fn = &state_fn_one;
+  one.next = &zero;
 
-zero.fn = &state_fn_zero;
-zero.next = &bit;
+  zero.fn = &state_fn_zero;
+  zero.next = &bit;
 
-bit.fn = &state_fn_bit;
-bit.next = &one;
+  bit.fn = &state_fn_bit;
+  bit.next = &one;
 
-static state invalid;
+  invalid.fn = &state_fn_invalid;
+  invalid.next = &invalid;
+}
 
-invalid.fn = &state_fn_invalid;
-invalid.next = &invalid;
+parser_t::parser_t() : length(0), state(&one) {}
 
-parser::parser() : length(0), state(&one) {}
-
-void parser::reset() {
+void parser_t::reset() {
   this->length = 0;
   this->state = &one;
 }
 
-bool parser::consume(unsigned int bit) {
+bool parser_t::consume(unsigned int bit) {
   if (this->state->fn(bit, *this)) {
     this->state = this->state->next;
     return true;

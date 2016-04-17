@@ -12,14 +12,16 @@
 #define ONE_BIT_LENGTH 200
 #define MIN_SIGNAL_LENGTH (ONE_BIT_LENGTH / 2)
 
+typedef long long int duration_t;
+
 struct Interrupt {
   std::chrono::high_resolution_clock::time_point timestamp;
   unsigned long long int duration;
-  unsigned int value;
+  duration_t value;
 };
 
 typedef Interrupt *interrupt_t;
-typedef boost::lockfree::spsc_queue<interrupt_t> interrupt_list_t;
+typedef boost::lockfree::spsc_queue<interrupt_t, boost::lockfree::capacity<500>> interrupt_list_t;
 
 /*
  * interrupt_list_t is threadsafe as long as only one thread reads and only one
@@ -50,7 +52,7 @@ void handleInterrupt(void) {
 }
 
 void parse(void) {
-  parser parser;
+  doorman::parser_t parser;
   interrupt_t current, previous;
 
   previous = new Interrupt();
@@ -60,29 +62,29 @@ void parse(void) {
 
   while (true) {
     while (interrupts.read_available()) {
-      interrupt = interrupts.front();
+      current = interrupts.front();
       interrupts.pop();
 
-      interrupt->duration = std::chrono::duration_cast<std::chrono::milliseconds>(
-        interrupt->timestamp - previous->timestamp
-      );
+      current->duration = std::chrono::duration_cast<std::chrono::milliseconds>(
+        current->timestamp - previous->timestamp
+      ).count();
 
-      if (interrupt->duration < MIN_SIGNAL_LENGTH
-          || interrupt->value == previous->value) {
-        previous->duration += interrupt->duration;
+      if (current->duration < MIN_SIGNAL_LENGTH
+          || current->value == previous->value) {
+        previous->duration += current->duration;
 
-        empty.push(interrupt);
+        empty.push(current);
         continue;
       }
 
-      unsigned int count = (unsigned int) round((1.0f * interrupt->duration) / ONE_BIT_LENGTH);
+      unsigned int count = (unsigned int) round((1.0f * current->duration) / ONE_BIT_LENGTH);
 
       if (count > 5) {
         count = 5;
       }
 
       while (count-- > 0) {
-        if (parser.consume(interrupt->value)) {
+        if (parser.consume(current->value)) {
           if (parser.is_ready()) {
             std::cout << parser.bits << std::endl;
             parser.reset();
@@ -91,6 +93,8 @@ void parse(void) {
           parser.reset();
         }
       }
+
+      empty.push(current);
     }
 
     ::delayMicroseconds(PARSER_WAIT);
