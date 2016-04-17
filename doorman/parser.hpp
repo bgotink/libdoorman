@@ -18,9 +18,7 @@ namespace doorman
 
     void reset();
     bool consume(unsigned int);
-    inline bool is_ready() const {
-      return this->length == 12;
-    }
+    bool is_ready() const;
   };
 }
 

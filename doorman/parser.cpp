@@ -66,4 +66,8 @@ bool parser_t::consume(unsigned int bit) {
   return false;
 }
 
+bool parser_t::is_ready() const {
+  return this->length == 12 && this->state == &bit;
+}
+
 }; // end namespace doorman

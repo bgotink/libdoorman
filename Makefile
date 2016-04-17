@@ -3,14 +3,14 @@
 LIB_CXXSRC = $(wildcard doorman/*.cpp)
 
 INCLUDE=-Idoorman
-LIBS=-lwiringPi
+LIBS=
 
 CXXFLAGS=$(INCLUDE) -std=c++11
 CCFLAGS=$(CXXFLAGS)
 
 LIB_OBJS = $(addprefix build/, $(subst /,_,$(LIB_CXXSRC:.cpp=.o)))
 
-all: bin/listen dist/libdoorman.so dist/libdoorman.a
+all: bin/parser-test bin/listen dist/libdoorman.so dist/libdoorman.a
 
 clean:
 	@echo "Cleaning..."
