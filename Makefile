@@ -3,7 +3,7 @@
 LIB_CXXSRC = $(wildcard doorman/*.cpp)
 
 INCLUDE=-Idoorman
-LIBS=
+LIBS=-lwiringPi
 
 CXXFLAGS=$(INCLUDE) -std=c++11
 CCFLAGS=$(CXXFLAGS)
