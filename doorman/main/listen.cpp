@@ -4,7 +4,7 @@
 
 #include <boost/lockfree/spsc_queue.hpp>
 
-#include "parser.hpp"
+#include "../parser.hpp"
 
 #define PIN_READ 27
 #define PARSER_WAIT 200
@@ -99,4 +99,16 @@ void parse(void) {
 
     ::delayMicroseconds(PARSER_WAIT);
   }
+}
+
+
+int main(int argc, char ** argv) {
+  ::wiringPiSetupGpio();
+  ::pinMode(PIN_READ, INPUT);
+
+  doorman::init();
+
+  ::wiringPiISR(PIN_READ, INT_EDGE_BOTH, &handleInterrupt);
+
+  parse();
 }
