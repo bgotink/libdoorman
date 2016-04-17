@@ -1,138 +1,68 @@
-#include "parser.h"
+#include "parser.hpp"
 
-#include <atomic>
-#include <mutex>
-#include <condition_variable>
-#include <exception>
-#include <stdexcept>
+namespace doorman {
 
-using namespace std;
+typedef bool (parser_state_fn *)(unsigned int, parser &);
 
-namespace doorman { namespace parser {
-
-// measurement
-
-measurement::measurement(int value, int length) : value(value), length(length), next(NULL) {
-  // NOP
+struct state {
+  parser_state_fn fn;
+  state *next;
 };
 
-~measurement::measurement() {
-  if (hasNext()) {
-    delete next;
-    next = NULL;
-  }
-};
-
-void measurement::clear() {
-  value = length = 0;
+static bool state_fn_one(unsigned int bit, parser &parser) {
+  return bit == 1;
 }
 
-}};
-
-// measurement_list
-
-measurement_list::measurement_list(int size) : first(NULL), last(NULL), empty_first(NULL), empty_last(NULL) {
-  if (size > 0) {
-    empty_first = new measurement();
-
-    while (size > 1) {
-      measurement *current = new measurement();
-      current->setNext(empty_first);
-      empty_first = current;
-
-      size--;
-    }
-  }
-};
-
-measurement_list::~measurement_list() {
-  if (first != NULL) {
-    delete first;
-    first = NULL;
-    last = NULL;
-  }
-
-  if (empty_first != NULL) {
-    delete empty_first;
-    empty_first = NULL;
-    empty_last = NULL;
-  }
-};
-
-measurement *measurement_list::create() {
-  measurement *result = NULL;
-
-  if (empty_first != NULL) {
-    result = empty_first;
-
-    if (result->hasNext()) {
-      empty_first = result->getNext();
-    } else {
-      empty_first = empty_last = NULL;
-    }
-
-    result->setNext(NULL);
-  } else {
-    result = new measurement();
-  }
-
-  return result;
-};
-
-void measurement_list::destroy(measurement *meas) {
-  if (meas == NULL) {
-    return;
-  }
-
-  measurement *last = meas;
-
-  while (last->hasNext()) {
-    last->clear();
-    last = last->getNext();
-  }
-
-  empty_last->setNext(meas);
-  empty_last = last;
+static bool state_fn_zero(unsigned int bit, parser &parser) {
+  return bit == 0;
 }
 
-// locking
+static bool state_fn_bit(unsigned int bit, parser &parser) {
+  if (parser.length < 12) {
+    parser.bits[parser.length] = bit;
+    parser.length++;
 
-static mutext parser_mutex;
-static condition_variable parser_condition;
-static atomic_bool parser_locked = false;
-
-static void lock() {
-  unique_lock<mutex> parser_lock(parser_mutex);
-
-  if (parser_locked) {
-    throw std::runtime_error("impossible scenario: parser already locked");
+    return true;
   }
 
-  parser_locked = true;
-  while (parser_locked) {
-    parser_condition.wait(parser_lock);
+  return false;
+}
+
+static bool state_fn_invalid(unsigned int bit, parser &parser) {
+  return false;
+}
+
+static state one, zero, bit;
+
+one.fn = &state_fn_one;
+one.next = &zero;
+
+zero.fn = &state_fn_zero;
+zero.next = &bit;
+
+bit.fn = &state_fn_bit;
+bit.next = &one;
+
+static state invalid;
+
+invalid.fn = &state_fn_invalid;
+invalid.next = &invalid;
+
+parser::parser() : length(0), state(&one) {}
+
+void parser::reset() {
+  this->length = 0;
+  this->state = &one;
+}
+
+bool parser::consume(unsigned int bit) {
+  if (this->state->fn(bit, *this)) {
+    this->state = this->state->next;
+    return true;
   }
+
+  this->state = &invalid;
+  return false;
 }
 
-void unlock() {
-  if (!parser_locked) {
-    return;
-  }
-
-  parser_locked = false;
-  parser_condition.notify_all();
-}
-
-// initialisation
-
-void init() {
-  // TODO
-}
-
-// parsing
-
-static measurement_list list_of_measurements;
-
-void parse() {
-  
-}
+}; // end namespace doorman
