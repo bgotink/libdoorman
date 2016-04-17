@@ -12,7 +12,7 @@
 #define ONE_BIT_LENGTH 200
 #define MIN_SIGNAL_LENGTH (ONE_BIT_LENGTH / 2)
 
-typedef long long int duration_t;
+typedef int64_t duration_t;
 
 struct Interrupt {
   std::chrono::high_resolution_clock::time_point timestamp;
@@ -65,7 +65,7 @@ void parse(void) {
       current = interrupts.front();
       interrupts.pop();
 
-      current->duration = std::chrono::duration_cast<std::chrono::milliseconds>(
+      current->duration = std::chrono::duration_cast<std::chrono::microseconds>(
         current->timestamp - previous->timestamp
       ).count();
 
@@ -83,12 +83,13 @@ void parse(void) {
         count = 5;
       }
 
-      std::cout << current->value << ' ' << count << '\n';
+      // std::cout << current->value << ' ' << current->duration << ' ' << count << '\n';
 
       while (count-- > 0) {
         if (parser.consume(current->value)) {
           if (parser.is_ready()) {
-            std::cout << parser.bits << std::endl;
+            std::cout << parser.bits[0] << parser.bits[1] << parser.bits[2] << parser.bits[2] <<
+                parser.bits[4] << parser.bits[5] << parser.bits[6] << parser.bits[7] << parser.bits[8] << parser.bits[9] << parser.bits[10] << parser.bits[11] << std::endl;
             parser.reset();
           }
         } else {
@@ -96,10 +97,11 @@ void parse(void) {
         }
       }
 
-      empty.push(current);
+      empty.push(previous);
+      previous = current;
     }
 
-    std::cout << std::endl;
+    // std::cout << std::endl;
 
     ::delayMicroseconds(PARSER_WAIT);
   }
