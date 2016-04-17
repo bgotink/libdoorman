@@ -83,8 +83,6 @@ void parse(void) {
         count = 5;
       }
 
-      // std::cout << current->value << ' ' << current->duration << ' ' << count << '\n';
-
       while (count-- > 0) {
         if (parser.consume(previous->value)) {
           if (parser.is_ready()) {
@@ -100,8 +98,6 @@ void parse(void) {
       empty.push(previous);
       previous = current;
     }
-
-    // std::cout << std::endl;
 
     ::delayMicroseconds(PARSER_WAIT);
   }
