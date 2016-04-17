@@ -41,6 +41,10 @@ function bitsToInt(bits) {
 
 function createInputParser() {
   return through.obj(function (line, _, cb) {
+    if (line.length !== 12) {
+      return cb(null);
+    }
+
     cb(null, {
       channel: channels[bitsToInt(line.slice(0, 4))],
       song: songs[bitsToInt(line.slice(4))]
