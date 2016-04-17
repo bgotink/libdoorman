@@ -2,7 +2,7 @@
 
 const through = require('through2');
 
-const TIMEOUT = 100 /* ms */;
+const TIMEOUT = 1000 /* 1s in ms */;
 
 module.exports = function createDedupeStream() {
   const lastTimes = Array(16);
