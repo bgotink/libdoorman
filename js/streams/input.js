@@ -41,7 +41,7 @@ function bitsToInt(bits) {
 
 function createInputParser() {
   return through.obj(function (line, _, cb) {
-    if (line.length !== 12) {
+    if (line.length !== 12 || !line.match(/^[10]*$/)) {
       return cb(null);
     }
 
