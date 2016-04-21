@@ -24,6 +24,7 @@ function doorman(args, options) {
       }
 
       console.log(String(stdout));
+      console.error(String(stderr));
       resolve();
     });
   });
@@ -31,6 +32,7 @@ function doorman(args, options) {
 
 exports.play = function playSong(channel, song) {
   return takeAction(function () {
-    return doorman([ 'write', channel, (song - 1) ]);
+    console.log(`Playing song ${song} on channel ${channel}`);
+    return doorman([ 'write', channel, song ]);
   });
 }
