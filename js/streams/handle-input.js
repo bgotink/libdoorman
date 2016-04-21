@@ -4,6 +4,8 @@ const through = require('through2');
 const fork = require('pipe-iterators').fork;
 const request = require('request');
 
+const doorman = require('../utils/doorman');
+
 function drop() {
   return through.obj(function (_, __, cb) {
     cb(null);
@@ -39,6 +41,29 @@ function sendToIfttt(channel, song, ifttt) {
   });
 }
 
+function ringBell(channel, song, outputConfig) {
+  const hasSong = song && song > 0;
+  channel = +channel;
+
+  const outputChannel = outputConfig.channel;
+  const hasOutputSong = outputConfig.song && outputConfig.song > 0;
+
+  return through.obj(function (hit, _, cb) {
+    if (hit.channel !== channel || (hasSong && song !== hit.song)) {
+      // drop
+      return cb(null);
+    }
+
+    const songToTrigger = hasOutputSong ? outputConfig.song : hit.song;
+
+    console.log(`Triggering song ${songToTrigger} on channel ${outputChannel} after receiving song ${hit.song} on channel ${channel}`);
+
+    doorman.play(outputChannel, songToTrigger)
+    .then(function () { cb(null); })
+    .catch(function (err) { cb(err); });
+  });
+}
+
 module.exports = function createHandleStream(configs) {
   if (!configs) {
     return drop();
@@ -57,6 +82,10 @@ module.exports = function createHandleStream(configs) {
 
     if (config.ifttt) {
       streams.push(sendToIfttt(config.channel, config.song, config.ifttt));
+    }
+
+    if (config.ringBell) {
+      streams.push(ringBell(config.channel, config.song, config.ringBell));
     }
 
     if (streams.length) {

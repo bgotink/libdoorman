@@ -4,5 +4,8 @@
   "ifttt": {
     "event": "ding-dong",
     "key": "abcdefghijklmnopqrstuvwxyz"
+  },
+  "ringBell": {
+    "channel": 5
   }
 }]

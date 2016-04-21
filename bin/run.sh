@@ -16,4 +16,4 @@ fi
 
 #cd js; npm install; cd -
 
-sudo bin/listen | $NODE js/handle
+sudo (bin/listen | $NODE js/handle)
