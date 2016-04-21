@@ -1,5 +1,5 @@
 #include <iostream>
-#include "../parser.hpp"
+#include "parser.hpp"
 
 using std::cin;
 using std::cout;
@@ -12,7 +12,7 @@ using std::endl;
   cout << endl;
 
 int main(int argc, char ** argv) {
-  doorman::init();
+  doorman::initParser();
   doorman::parser_t parser;
 
   unsigned int bit;

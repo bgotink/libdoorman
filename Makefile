@@ -10,7 +10,7 @@ CCFLAGS=$(CXXFLAGS)
 
 LIB_OBJS = $(addprefix build/, $(subst /,_,$(LIB_CXXSRC:.cpp=.o)))
 
-all: bin/parser-test bin/listen dist/libdoorman.so dist/libdoorman.a
+all: bin/parser-test bin/listen bin/doorman dist/libdoorman.so dist/libdoorman.a
 
 clean:
 	@echo "Cleaning..."

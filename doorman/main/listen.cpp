@@ -104,7 +104,7 @@ void parse(void) {
 
 
 int main(int argc, char ** argv) {
-  setup();
+  doorman::setup();
 
   doorman::initParser();
 
