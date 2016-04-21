@@ -21,15 +21,19 @@ function sendToIfttt(channel, song, ifttt) {
       return cb(null);
     }
 
+    console.log(`Sending ${ifttt.event} event to IFTTT for channel ${channel}${hasSong ? ` and song ${song}` : ''}`);
     request(url, function (error, response) {
       if (error) {
+        console.log('Error while contacting IFTTT');
         return cb(error);
       }
 
       if (response.statusCode !== 200) {
+        console.log(`Got HTTP response code ${response.statusCode} from IFTTT`);
         return cb(response.statusCode);
       }
 
+      console.log(`Event ${ifttt.event} sent to IFTTT`);
       cb(null);
     });
   });
