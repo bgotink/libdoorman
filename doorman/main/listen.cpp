@@ -4,12 +4,10 @@
 
 #include <boost/lockfree/spsc_queue.hpp>
 
-#include "../parser.hpp"
+#include "parser.hpp"
+#include "config.h"
+#include "doorman.hpp"
 
-#define PIN_READ 27
-#define PARSER_WAIT 20
-
-#define ONE_BIT_LENGTH 200
 #define MIN_SIGNAL_LENGTH (ONE_BIT_LENGTH / 2)
 
 typedef int64_t duration_t;
@@ -43,7 +41,7 @@ void handleInterrupt(void) {
     interrupt = new Interrupt();
   }
 
-  interrupt->value = (unsigned int) (1 - ::digitalRead(PIN_READ));
+  interrupt->value = (unsigned int) (1 - doorman::read());
   interrupt->timestamp = std::chrono::high_resolution_clock::now();
 
   if (!interrupts.push(interrupt)) {
@@ -106,10 +104,9 @@ void parse(void) {
 
 
 int main(int argc, char ** argv) {
-  ::wiringPiSetupGpio();
-  ::pinMode(PIN_READ, INPUT);
+  setup();
 
-  doorman::init();
+  doorman::initParser();
 
   ::wiringPiISR(PIN_READ, INT_EDGE_BOTH, &handleInterrupt);
 

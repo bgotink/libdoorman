@@ -35,7 +35,7 @@ static bool state_fn_invalid(unsigned int bit, parser_t &parser) {
 static state_t one, zero, bit;
 static state_t invalid;
 
-void init() {
+void initParser() {
   one.fn = &state_fn_one;
   one.next = &zero;
 

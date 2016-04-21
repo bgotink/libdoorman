@@ -3,7 +3,7 @@
 
 namespace doorman
 {
-  void init();
+  void initParser();
 
   struct state_t;
 
