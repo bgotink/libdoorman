@@ -1,0 +1,8 @@
+[{
+  "channel": 4,
+  "song": 2,
+  "ifttt": {
+    "event": "ding-dong",
+    "key": "abcdefghijklmnopqrstuvwxyz"
+  }
+}]
