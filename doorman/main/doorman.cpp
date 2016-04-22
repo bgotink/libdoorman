@@ -21,6 +21,8 @@ int content[COUNT];
 char newline = '\n';
 
 int do_read(char *file, bool human) {
+  doorman::setupRead();
+
   cerr << "Listening... ";
 
   for (int i = 0; i < COUNT; i++) {
@@ -95,6 +97,8 @@ int do_write(char *channel_str, char *sound_str) {
     return 1;
   }
 
+  doorman::setupWrite();
+
   printf("Playing sound %d on channel %d\n", sound, channel);
 
   int channel_bit = channel_map[channel - 1];
@@ -134,8 +138,6 @@ int main(int argc, char ** argv) {
 
   char *command = argv[2];
   char *file = (argc == 3) ? argv[3] : 0;
-
-  doorman::setup();
 
   if (command_read == argv[1]) {
     return do_read(file, false);

@@ -104,8 +104,7 @@ void parse(void) {
 
 
 int main(int argc, char ** argv) {
-  doorman::setup();
-
+  doorman::setupRead();
   doorman::initParser();
 
   ::wiringPiISR(PIN_READ, INT_EDGE_BOTH, &handleInterrupt);
