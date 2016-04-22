@@ -4,9 +4,9 @@ set -e
 
 cd $(dirname $(dirname "$0"))
 
-if [ ! -x bin/listen ]; then
-  echo "making bin/listen" >&2
-  make bin/listen
+if [ ! -x bin/listen ] || [ ! -x bin/doorman ]; then
+  echo "making bin/listen and bin/doorman" >&2
+  make bin/listen bin/doorman
 fi
 
 NODE=nodejs
