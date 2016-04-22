@@ -1,6 +1,6 @@
 'use strict';
 
-const exec = require('child_process').execFile;
+const spawn = require('child_process').spawn;
 const path = require('path');
 
 var actionsQueue = Promise.resolve();
@@ -14,17 +14,19 @@ function takeAction(fn) {
 
 const DOORMAN_EXEC = path.resolve(__dirname, '../../bin/doorman');
 
-function doorman(args, options) {
-  return new Promise(function (resolve, reject) {
-    exec(DOORMAN_EXEC, args || [], options || {}, function (error, stdout, stderr) {
-      if (error) {
-        console.error(String(stderr));
-        console.error(error);
-        return reject(error);
-      }
+function doorman(args) {
+  if (arguments.length > 1 && !Array.isArray(args)) {
+    args = Array.prototype.slice.call(args);
+  }
 
-      console.log(String(stdout));
-      console.error(String(stderr));
+  return new Promise(function (resolve, reject) {
+    const child = spawn(DOORMAN_EXEC, args || [], {
+      // detached: true,
+      stdio: [ 'ignore', 1, 2 ]
+    });
+
+    child.on('close', function (code) {
+      console.log(JSON.stringify(code));
       resolve();
     });
   });
@@ -33,6 +35,6 @@ function doorman(args, options) {
 exports.play = function playSong(channel, song) {
   return takeAction(function () {
     console.log(`Playing song ${song} on channel ${channel}`);
-    return doorman([ 'write', channel, song ]);
+    return doorman('write', channel, song);
   });
 }
