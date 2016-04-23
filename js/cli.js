@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 'use strict';
 
 const path = require('path');
@@ -24,5 +25,5 @@ fs.readFile(configPath, function (err, contents) {
     return;
   }
 
-  doorman(JSON.parse(config));
+  doorman(JSON.parse(String(contents)));
 });

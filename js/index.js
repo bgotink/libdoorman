@@ -11,7 +11,7 @@ module.exports = function doorman(config) {
   return inputStream(config).pipe(
     pipeline(
       dedupeStream(),
-      logStream,
+      logStream(),
       outputStream(config)
     ).on('error', console.error)
   );
