@@ -7,7 +7,7 @@ const inputParserStream = require('./streams/input-parser');
 const dedupeStream = require('./streams/dedupe');
 const handleInputStream = require('./streams/handle-input');
 
-const logStream = require('through2').obj(function (hit, _, cb) {
+const logStream = through.obj(function (hit, _, cb) {
   console.log(JSON.stringify(hit));
   cb(null, hit);
 });
@@ -25,6 +25,6 @@ process.stdin.pipe(
     inputParserStream(),
     dedupeStream(),
     logStream,
-    config ? handleInputStream(config) : through.obj()
+    handleInputStream(config)
   ).on('error', console.error)
 );
