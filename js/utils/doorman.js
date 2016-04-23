@@ -12,7 +12,7 @@ function takeAction(fn) {
   return result;
 }
 
-const DOORMAN_EXEC = path.resolve(__dirname, '../../bin/wrap_doorman.sh');
+const DOORMAN_EXEC = path.resolve(__dirname, '../../scripts/wrap_doorman.sh');
 
 function doorman(args) {
   if (arguments.length > 1 && !Array.isArray(args)) {

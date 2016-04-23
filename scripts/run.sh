@@ -14,6 +14,4 @@ if which node >/dev/null 2>&1; then
   NODE=node
 fi
 
-#cd js; npm install; cd -
-
-sudo $NODE js/handle
+exec sudo $NODE start -- config.json
