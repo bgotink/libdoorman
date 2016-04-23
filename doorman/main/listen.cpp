@@ -111,7 +111,7 @@ int main(int argc, char ** argv) {
 
   int pin = atoi(argv[1]);
 
-  if (pin < 0 || ping > 64) {
+  if (pin < 0 || pin > 64) {
     std::cerr << "Pin must be between 0 and 63, got " << argv[1] << std::endl;
     return 1;
   }

@@ -11,7 +11,7 @@ static int readPin(-1);
 void doorman::setupRead(int pin) {
   if (!hasInitialized) {
     ::wiringPiSetupGpio();
-    hasInitializedWP = true;
+    hasInitialized = true;
   }
 
   if (readPin == -1) {
@@ -23,7 +23,7 @@ void doorman::setupRead(int pin) {
 void doorman::setupWrite(int pin) {
   if (!hasInitialized) {
     ::wiringPiSetupGpio();
-    hasInitializedWP = true;
+    hasInitialized = true;
   }
 
   if (writePin == -1) {
