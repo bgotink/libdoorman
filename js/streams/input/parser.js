@@ -4,32 +4,7 @@ const through = require('through2');
 const split = require('split2');
 const pipeline = require('pipe-iterators').pipeline;
 
-// see PROTOCOL.md
-const channels = Object.freeze([
-  4,
-  10,
-  12,
-  2,
-  6,
-  8,
-  14,
-  16,
-  5,
-  11,
-  13,
-  3,
-  7,
-  9,
-  15,
-  1
-]);
-
-const songs = Array(256);
-
-songs.fill(-1);
-songs[bitsToInt([ 1, 1, 1, 1, 0, 1, 1, 1 ])] = 1;
-songs[bitsToInt([ 1, 1, 1, 1, 1, 0, 1, 1 ])] = 2;
-songs[bitsToInt([ 1, 1, 1, 1, 1, 1, 0, 1 ])] = 3;
+const protocol = require('../../utils/protocol');
 
 function bitsToInt(bits) {
   if (bits.length === 1) {
@@ -46,8 +21,8 @@ function createInputParser() {
     }
 
     cb(null, {
-      channel: channels[bitsToInt(line.slice(0, 4))],
-      song: songs[bitsToInt(line.slice(4))]
+      channel: protocol.channels[bitsToInt(line.slice(0, 4))],
+      song: protocol.songs[bitsToInt(line.slice(4))]
     });
   });
 }

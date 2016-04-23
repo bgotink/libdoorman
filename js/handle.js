@@ -3,7 +3,7 @@
 const through = require('through2');
 const pipeline = require('pipe-iterators').pipeline;
 
-const inputParserStream = require('./streams/input-parser');
+const inputStream = require('./streams/input');
 const dedupeStream = require('./streams/dedupe');
 const handleInputStream = require('./streams/handle-input');
 
@@ -20,9 +20,8 @@ try {
   console.error('Create config.json (use config.json.base as template) to configure how to handle the input');
 }
 
-process.stdin.pipe(
+inputStream().pipe(
   pipeline(
-    inputParserStream(),
     dedupeStream(),
     logStream,
     handleInputStream(config)
