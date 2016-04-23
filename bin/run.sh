@@ -5,8 +5,8 @@ set -e
 cd $(dirname $(dirname "$0"))
 
 if [ ! -x bin/listen ] || [ ! -x bin/doorman ]; then
-  echo "making bin/listen and bin/doorman" >&2
-  make bin/listen bin/doorman
+  echo "Are you sure you installed this npm module?" >&2
+  exit 1
 fi
 
 NODE=nodejs

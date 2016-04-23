@@ -1,4 +1,4 @@
-.PHONY: all clean
+.PHONY: all clean for-node
 
 LIB_CXXSRC = $(wildcard doorman/*.cpp)
 
@@ -11,6 +11,7 @@ CCFLAGS=$(CXXFLAGS)
 LIB_OBJS = $(addprefix build/, $(subst /,_,$(LIB_CXXSRC:.cpp=.o)))
 
 all: bin/parser-test bin/listen bin/doorman dist/libdoorman.so dist/libdoorman.a
+for-node: bin/listen bin/doorman
 
 clean:
 	@echo "Cleaning..."
@@ -35,4 +36,4 @@ dist/libdoorman.a: $(LIB_OBJS)
 dist/libdoorman.so: $(LIB_OBJS)
 	@echo "Linking dynamic library" $@
 	@$(CXX) -shared -Wl,-soname,libdoorman.so.1 -o dist/libdoorman.so.1.0.0  $(LIB_OBJS)
-	@cd dist && ln -s libdoorman.so.1.0.0 libdoorman.so.1.0 && ln -s libdoorman.so.1.0 libdoorman.so.1 && ln -s libdoorman.so.1 libdoorman.so
+	@cd dist && ln -fs libdoorman.so.1.0.0 libdoorman.so.1.0 && ln -fs libdoorman.so.1.0 libdoorman.so.1 && ln -fs libdoorman.so.1 libdoorman.so

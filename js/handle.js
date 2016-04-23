@@ -15,7 +15,7 @@ const logStream = through.obj(function (hit, _, cb) {
 let config = null;
 
 try {
-  config = require('./config.json');
+  config = require('../config.json');
 } catch (e) {
   console.error('Create config.json (use config.json.base as template) to configure how to handle the input');
 }
