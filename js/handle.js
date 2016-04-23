@@ -5,7 +5,7 @@ const pipeline = require('pipe-iterators').pipeline;
 
 const inputStream = require('./streams/input');
 const dedupeStream = require('./streams/dedupe');
-const handleInputStream = require('./streams/handle-input');
+const outputStream = require('./streams/output');
 
 const logStream = through.obj(function (hit, _, cb) {
   console.log(JSON.stringify(hit));
@@ -20,10 +20,10 @@ try {
   console.error('Create config.json (use config.json.base as template) to configure how to handle the input');
 }
 
-inputStream().pipe(
+inputStream(config).pipe(
   pipeline(
     dedupeStream(),
     logStream,
-    handleInputStream(config)
+    outputStream(config)
   ).on('error', console.error)
 );
