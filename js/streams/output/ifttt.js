@@ -15,7 +15,7 @@ module.exports = function sendToIfttt(channelCfg) {
       return cb(null);
     }
 
-    console.log(`Sending ${ifttt.event} event to IFTTT for channel ${channel}${hasSong ? ` and song ${channelCfg.song}` : ''}`);
+    console.log(`Sending ${channelCfg.ifttt.event} event to IFTTT for channel ${channel}${hasSong ? ` and song ${channelCfg.song}` : ''}`);
     request(url, function (error, response) {
       if (error) {
         console.log('Error while contacting IFTTT');
@@ -27,7 +27,7 @@ module.exports = function sendToIfttt(channelCfg) {
         return cb(response.statusCode);
       }
 
-      console.log(`Event ${ifttt.event} sent to IFTTT`);
+      console.log(`Event ${channelCfg.ifttt.event} sent to IFTTT`);
       cb(null);
     });
   });

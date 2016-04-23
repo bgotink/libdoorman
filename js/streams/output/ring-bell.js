@@ -2,7 +2,7 @@
 
 const through = require('through2');
 
-const createDoorman = require('../utils/doorman');
+const createDoorman = require('../../utils/doorman');
 
 exports =
 module.exports = function ringBell(channelCfg, config) {
