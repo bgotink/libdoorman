@@ -104,10 +104,22 @@ void parse(void) {
 
 
 int main(int argc, char ** argv) {
-  doorman::setupRead();
+  if (argc != 2) {
+    std::cerr << "Usage: " << argv[0] << " <pin (0-63)>" << std::endl;
+    return 1;
+  }
+
+  int pin = atoi(argv[1]);
+
+  if (pin < 0 || ping > 64) {
+    std::cerr << "Pin must be between 0 and 63, got " << argv[1] << std::endl;
+    return 1;
+  }
+
+  doorman::setupRead(pin);
   doorman::initParser();
 
-  ::wiringPiISR(PIN_READ, INT_EDGE_BOTH, &handleInterrupt);
+  ::wiringPiISR(pin, INT_EDGE_BOTH, &handleInterrupt);
 
   parse();
 }

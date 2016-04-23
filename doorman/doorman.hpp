@@ -3,8 +3,8 @@
 
 namespace doorman {
 
-void setupRead();
-void setupWrite();
+void setupRead(int);
+void setupWrite(int);
 
 int read();
 void write(int);

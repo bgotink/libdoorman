@@ -35,11 +35,15 @@ function doorman(args) {
   });
 }
 
-exports.play = function playSong(channel, song) {
-  return takeAction(function () {
-    console.log(`Playing song ${song} on channel ${channel}`);
-    return doorman('write', channel, song).catch(function () {
-      return Promise.reject(`Error when playing song ${song} on channel ${channel}`);
-    });;
-  });
-}
+module.exports = function createDoorman(pin) {
+  return  {
+    play: function play(channel, song) {
+      return takeAction(function () {
+        console.log(`Playing song ${song} on channel ${channel}`);
+        return doorman(pin, 'write', channel, song).catch(function () {
+          return Promise.reject(`Error when playing song ${song} on channel ${channel}`);
+        });;
+      });
+    }
+  };
+};

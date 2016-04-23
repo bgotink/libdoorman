@@ -3,40 +3,41 @@
 #include "doorman.hpp"
 #include "config.h"
 
-static bool hasInitializedWP(false);
-static bool hasInitializedRead(false);
-static bool hasInitializedWrite(false);
+static bool hasInitialized(false);
 
-void doorman::setupRead() {
-  if (!hasInitializedWP) {
+static int writePin(-1);
+static int readPin(-1);
+
+void doorman::setupRead(int pin) {
+  if (!hasInitialized) {
     ::wiringPiSetupGpio();
     hasInitializedWP = true;
   }
 
-  if (!hasInitializedRead) {
-    ::pinMode(PIN_READ, INPUT);
-    hasInitializedRead = true;
+  if (readPin == -1) {
+    ::pinMode(pin, INPUT);
+    readPin = pin;
   }
 };
 
-void doorman::setupWrite() {
-  if (!hasInitializedWP) {
+void doorman::setupWrite(int pin) {
+  if (!hasInitialized) {
     ::wiringPiSetupGpio();
     hasInitializedWP = true;
   }
 
-  if (!hasInitializedWrite) {
-    ::pinMode(PIN_WRITE, OUTPUT);
-    hasInitializedWrite = true;
+  if (writePin == -1) {
+    ::pinMode(pin, OUTPUT);
+    writePin = pin;
   }
 };
 
 int doorman::read() {
-  return ::digitalRead(PIN_READ);
+  return ::digitalRead(readPin);
 };
 
 void doorman::write(int value) {
-  return ::digitalWrite(PIN_WRITE, value);
+  return ::digitalWrite(writePin, value);
 };
 
 void doorman::sleep() {

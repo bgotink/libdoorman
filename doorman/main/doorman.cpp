@@ -20,8 +20,8 @@ int content[COUNT];
 
 char newline = '\n';
 
-int do_read(char *file, bool human) {
-  doorman::setupRead();
+int do_read(int pin, char *file, bool human) {
+  doorman::setupRead(pin);
 
   cerr << "Listening... ";
 
@@ -34,7 +34,7 @@ int do_read(char *file, bool human) {
 
   ostream *output;
 
-  if (file != 0) {
+  if (file != NULL) {
     output = new ofstream(file);
   } else {
     output = &cout;
@@ -79,7 +79,7 @@ int do_read(char *file, bool human) {
   return 0;
 }
 
-int do_write(char *channel_str, char *sound_str) {
+int do_write(int pin, char *channel_str, char *sound_str) {
   static int delay = 200;
   int channel = atoi(channel_str);
   int sound = atoi(sound_str);
@@ -97,7 +97,7 @@ int do_write(char *channel_str, char *sound_str) {
     return 1;
   }
 
-  doorman::setupWrite();
+  doorman::setupWrite(pin);
 
   printf("Playing sound %d on channel %d\n", sound, channel);
 
@@ -131,20 +131,23 @@ return 0;
 }
 
 int main(int argc, char ** argv) {
-  if (argc < 2) {
-    fprintf(stderr, "Invalid number of arguments: %d, at least 2 \nUsage: %s <mode>\n", argc - 1, argv[0]);
+  if (argc < 3) {
+    fprintf(stderr, "Invalid number of arguments: %d, required at least 2 \nUsage: %s <pin> <mode>\n", argc - 1, argv[0]);
     return 1;
   }
 
-  char *command = argv[2];
-  char *file = (argc == 3) ? argv[3] : 0;
+  int pin = atoi(argv[1]);
 
-  if (command_read == argv[1]) {
-    return do_read(file, false);
-  } else if (command_readHuman == argv[1]) {
-    return do_read(file, true);
-  } else if (command_write == argv[1] && argc == 4) {
-    return do_write(argv[2], argv[3]);
+  if (command_read == argv[2]) {
+    return do_read(pin, argv[3], false);
+  } else if (command_readHuman == argv[2]) {
+    return do_read(pin, argv[3], true);
+  } else if (command_write == argv[2]) {
+    if (argc != 5) {
+      fprintf(stderr, "Invalid number of arguments, write requires four arguments: %s <port> write <channel> <sound>\n", argv[0]);
+      return 1;
+    }
+    return do_write(pin, argv[3], argv[4]);
   } else {
     fprintf(stderr, "Invalid mode \"%s\", valid modes are \"read\", \"read-human\" and \"write <channel> <sound>\"\n", argv[1]);
     return 1;

@@ -4,7 +4,7 @@ const through = require('through2');
 const fork = require('pipe-iterators').fork;
 const request = require('request');
 
-const doorman = require('../utils/doorman');
+const createDoorman = require('../utils/doorman');
 
 function drop() {
   return through.obj(function (_, __, cb) {
@@ -41,12 +41,14 @@ function sendToIfttt(channel, song, ifttt) {
   });
 }
 
-function ringBell(channel, song, outputConfig) {
+function ringBell(pin, channel, song, outputConfig) {
   const hasSong = song && song > 0;
   channel = +channel;
 
   const outputChannel = outputConfig.channel;
   const hasOutputSong = outputConfig.song && outputConfig.song > 0;
+
+  const doorman = createDoorman(pin);
 
   return through.obj(function (hit, _, cb) {
     if (hit.channel !== channel || (hasSong && song !== hit.song)) {
@@ -64,28 +66,30 @@ function ringBell(channel, song, outputConfig) {
   });
 }
 
-module.exports = function createHandleStream(configs) {
-  if (!configs) {
+module.exports = function createHandleStream(config) {
+  if (!config.channels) {
     return drop();
   }
 
-  if (!Array.isArray(configs)) {
-    configs = [ configs ];
+  var channels = config.channels;
+
+  if (!Array.isArray(channels)) {
+    channels = [ channels ];
   }
 
-  if (configs.length === 0) {
+  if (channels.length === 0) {
     return drop();
   }
 
-  return fork(configs.map(function (config) {
+  return fork(channels.map(function (channel) {
     const streams = [];
 
-    if (config.ifttt) {
-      streams.push(sendToIfttt(config.channel, config.song, config.ifttt));
+    if (channel.ifttt) {
+      streams.push(sendToIfttt(channel.channel, channel.song, channel.ifttt));
     }
 
-    if (config.ringBell) {
-      streams.push(ringBell(config.channel, config.song, config.ringBell));
+    if (channel.ringBell) {
+      streams.push(ringBell(config.pins.write, channel.channel, channel.song, channel.ringBell));
     }
 
     if (streams.length) {

@@ -1,11 +1,17 @@
-[{
-  "channel": 4,
-  "song": 2,
-  "ifttt": {
-    "event": "ding-dong",
-    "key": "abcdefghijklmnopqrstuvwxyz"
+{
+  "pins": {
+    "read": 27,
+    "write": 22
   },
-  "ringBell": {
-    "channel": 5
-  }
-}]
+  "channels": [{
+    "channel": 4,
+    "song": 2,
+    "ifttt": {
+      "event": "ding-dong",
+      "key": "abcdefghijklmnopqrstuvwxyz"
+    },
+    "ringBell": {
+      "channel": 5
+    }
+  }]
+}
