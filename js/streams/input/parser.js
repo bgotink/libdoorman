@@ -6,14 +6,6 @@ const pipeline = require('pipe-iterators').pipeline;
 
 const protocol = require('../../utils/protocol');
 
-function bitsToInt(bits) {
-  if (bits.length === 1) {
-    return +bits[0];
-  }
-
-  return 2 * bitsToInt(bits.slice(0, -1)) + (+bits[bits.length - 1]);
-}
-
 function createInputParser() {
   return through.obj(function (line, _, cb) {
     if (line.length !== 12 || !line.match(/^[10]*$/)) {
@@ -21,8 +13,8 @@ function createInputParser() {
     }
 
     cb(null, {
-      channel: protocol.channels[bitsToInt(line.slice(0, 4))],
-      song: protocol.songs[bitsToInt(line.slice(4))]
+      channel: protocol.channel(line.slice(0, 4)),
+      song: protocol.song(line.slice(4))
     });
   });
 }

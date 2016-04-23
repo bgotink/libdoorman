@@ -29,5 +29,18 @@ songs[bitsToInt([ 1, 1, 1, 1, 1, 1, 0, 1 ])] = 3;
 
 Object.freeze(songs);
 
-exports.songs = songs;
-exports.channels = channels;
+function bitsToInt(bits) {
+  if (bits.length === 1) {
+    return +bits[0];
+  }
+
+  return 2 * bitsToInt(bits.slice(0, -1)) + (+bits[bits.length - 1]);
+}
+
+exports.song = function getSong(bits) {
+  return songs[typeof bits === 'number' ? bits : bitsToInt(bits)];
+};
+
+exports.channel = function getChannel(bits) {
+  return channels[typeof bits === 'number' ? bits : bitsToInt(bits)];
+}
