@@ -17,13 +17,13 @@ to be installed on your Raspberry Pi.
 ### Installation
 
 ```
-npm install -g doorman
+npm install -g doorman-chime
 ```
 
 ### Usage
 
 ```
-doorman --help
+doorman-chime --help
 ```
 
 ## C++
