@@ -3,6 +3,7 @@
 const through = require('through2');
 
 const createDoorman = require('../../utils/doorman');
+const createDateRange = require('../../utils/date-range');
 
 exports =
 module.exports = function ringBell(channelCfg, config) {
@@ -17,6 +18,7 @@ module.exports = function ringBell(channelCfg, config) {
   const hasOutputSong = channelCfg.ringBell.song && channelCfg.ringBell.song > 0;
 
   const doorman = createDoorman(config.pins.write);
+  const checkTime = createDateRange(channelCfg.ringBell.limit);
 
   return through.obj(function (hit, _, cb) {
     if (hit.channel !== channel || (hasSong && channelCfg.song !== hit.song)) {
@@ -25,6 +27,11 @@ module.exports = function ringBell(channelCfg, config) {
     }
 
     const songToTrigger = hasOutputSong ? channelCfg.ringBell.song : hit.song;
+
+    if (!checkTime()) {
+      console.log(`Not sending ${songToTrigger} to channel ${outputChannel} because it was triggered outside the defined time limits`);
+      return cb(null);
+    }
 
     console.log(`Triggering song ${songToTrigger} on channel ${outputChannel} after receiving song ${hit.song} on channel ${channel}`);
 
@@ -64,6 +71,15 @@ exports.check = function hasRingBellCfg(channelCfg) {
   if (channelCfg.ringBell.song && (isNaN(channelCfg.ringBell.song) || channelCfg.ringBell.song > 3)) {
     console.warn(`Invalid song: ${song}, expected undefined, below 1 or 1, 2 or 3`);
     return false;
+  }
+
+  if (channelCfg.ringBell.limit) {
+    try {
+      createDateRange(channelCfg.ringBell.limit);
+    } catch (e) {
+      console.warn(e.message);
+      return false;
+    }
   }
 
   return true;
