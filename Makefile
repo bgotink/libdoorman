@@ -15,22 +15,26 @@ for-node: bin/listen bin/doorman
 
 clean:
 	@echo "Cleaning..."
-	@rm -rf build/* bin/* dist/*
+	@rm -rf build bin dist
 
 build/doorman_%.o: doorman/%.cpp
 	@echo "Compiling" $<
+	@mkdir -p build
 	@$(CXX) $(CXXFLAGS) -o $@ -c $<
 
 build/main_%.o: doorman/main/%.cpp
 	@echo "Compiling main file" $<
+	@mkdir -p build
 	@$(CXX) $(CXXFLAGS) -o $@ -c $<
 
 bin/%: build/main_%.o dist/libdoorman.a
 	@echo "Creating binary" $@
+	@mkdir -p bin
 	@$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBS) $+ -o $@
 
 dist/libdoorman.a: $(LIB_OBJS)
 	@echo "Linking static library" $@
+	@mkdir -p dist
 	@ar rcs $@ $(LIB_OBJS)
 
 dist/libdoorman.so: $(LIB_OBJS)
