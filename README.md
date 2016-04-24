@@ -1,8 +1,74 @@
-# libdoorman
+# Doorman
 
-`libdoorman` is a C/C++ library for interacting with doorman portable chimes.
-We can only test our code on a doorman WFDC841 receiver and doorman 46011SL
+This project contains C++ code to handle portable chimes branded "doorman" on
+Raspberry Pi devices.
+We can only test this project on our doorman WFDC841 receiver and doorman 46011SL
 transmitter.
+
+## NPM
+
+This project is published as NPM package.
+
+### Requirements
+
+The NPM package requires at least Node 4 LTS. It also requires [wiringPi][wpi]
+to be installed on your Raspberry Pi.
+
+### Installation
+
+```
+npm install -g doorman
+```
+
+### Usage
+
+```
+doorman --help
+```
+
+## C++
+
+Running `make` will build three binaries:
+
+### `bin/parser-test`
+
+This is merely a test binary where you can input bits of a signal yourself and
+test the behaviour of the parser. You'll probably not need this.
+
+### `bin/doorman`
+
+This binary allows for reading and writing doorman signals. You'll need sudo
+when running this.
+
+```
+bin/doorman <pin> write <channel: 1-16> <sound: 1-3>
+```
+
+Writes the signal to play the given sound on the given channel over the given
+GPIO pin.
+
+```
+bin/doorman <pin> read [file]
+bin/doorman <pin> read-human [file]
+```
+
+Reads the signal over the given GPIO pin. If a file is given, it writes the data
+to that file, otherwise it outputs to standard out. Command `read` will output
+the raw data, `read-human` will try to find the doorman signals.  
+The program will listen for a couple of seconds before outputting the signals.
+
+### `bin/listen`
+
+This binary allows for continuous listening for signals on a pin. You'll need
+sudo when running this.
+
+```
+bin/listen <pin>
+```
+
+Listens for signals on the given GPIO pin, outputs a single line with the
+significant bits of the signal (see PROTOCOL.md) per signal received. Note that
+doorman transmitters tend to send their signal more than once.
 
 ## License
 
@@ -27,3 +93,5 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ```
+
+[wpi]: http://wiringpi.com/
