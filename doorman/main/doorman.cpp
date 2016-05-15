@@ -105,7 +105,7 @@ int do_write(int pin, char *channel_str, char *sound_str) {
 
   int sound_bit = sound_map[sound - 1];
 
-  for(int i = 0; i < 10; i++){
+  for(int i = 0; i < 100; i++){
     for(int j = 3; j >= 0; j--){
        doorman::write(1);
        delayMicroseconds(delay);
