@@ -131,8 +131,8 @@ return 0;
 }
 
 int main(int argc, char ** argv) {
-  if (argc < 3) {
-    fprintf(stderr, "Invalid number of arguments: %d, required at least 2 \nUsage: %s <pin> <mode>\n", argc - 1, argv[0]);
+  if (argc < 4) {
+    fprintf(stderr, "Invalid number of arguments: %d, required at least 3 \nUsage: %s <pin> <mode>\n", argc - 1, argv[0]);
     return 1;
   }
 
@@ -149,7 +149,7 @@ int main(int argc, char ** argv) {
     }
     return do_write(pin, argv[3], argv[4]);
   } else {
-    fprintf(stderr, "Invalid mode \"%s\", valid modes are \"read\", \"read-human\" and \"write <channel> <sound>\"\n", argv[1]);
+    fprintf(stderr, "Invalid mode \"%s\", valid modes are \"read\", \"read-human\" and \"write <channel> <sound>\"\n", argv[2]);
     return 1;
   }
 }
